@@ -240,9 +240,9 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     // Find Driver by email
-    const Driver = await Driver.findOne({ email });
+    const driver = await Driver.findOne({ email });
     
-    if (!Driver) {
+    if (!driver) {
       return res.status(404).json({ message: 'User with this email does not exist' });
     }
 
@@ -250,10 +250,10 @@ router.post('/forgot-password', async (req, res) => {
     const resetToken = crypto.randomBytes(20).toString('hex');
     
     // Set token and expiry on Driver document
-    Driver.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    Driver.resetPasswordExpires = Date.now() + config.resetPasswordExpiry;
+    driver.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    driver.resetPasswordExpires = Date.now() + config.resetPasswordExpiry;
     
-    await Driver.save();
+    await driver.save();
 
     // Create reset URL
     const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
@@ -267,7 +267,7 @@ router.post('/forgot-password', async (req, res) => {
       port: config.email.port,
       secure: config.email.secure,
       auth: {
-        Driver: config.email.auth.Driver,
+        user: config.email.auth.user,
         pass: config.email.auth.pass
       }
     });
@@ -275,7 +275,7 @@ router.post('/forgot-password', async (req, res) => {
     // Send email
     await transporter.sendMail({
       from: config.email.from,
-      to: Driver.email,
+      to: driver.email,
       subject: 'Password Reset Request',
       text: message
     });
@@ -283,9 +283,9 @@ router.post('/forgot-password', async (req, res) => {
     res.status(200).json({ message: 'Password reset email sent' });
   } catch (error) {
     console.error('Forgot password error:', error);
-    Driver.resetPasswordToken = undefined;
-    Driver.resetPasswordExpires = undefined;
-    await Driver.save();
+    driver.resetPasswordToken = undefined;
+    driver.resetPasswordExpires = undefined;
+    await driver.save();
     
     res.status(500).json({ message: 'Could not send reset email' });
   }
@@ -305,21 +305,21 @@ router.post('/reset-password/:token', async (req, res) => {
     const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
     // Find Driver with token and valid expiry
-    const Driver = await Driver.findOne({
+    const driver = await Driver.findOne({
       resetPasswordToken,
       resetPasswordExpires: { $gt: Date.now() }
     });
 
-    if (!Driver) {
+    if (!driver) {
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
 
     // Set new password and clear reset token fields
-    Driver.password = password;
-    Driver.resetPasswordToken = undefined;
-    Driver.resetPasswordExpires = undefined;
+    driver.password = password;
+    driver.resetPasswordToken = undefined;
+    driver.resetPasswordExpires = undefined;
     
-    await Driver.save();
+    await driver.save();
 
     res.status(200).json({ message: 'Password reset successful' });
   } catch (error) {
@@ -337,12 +337,12 @@ router.get('/validate-reset-token/:token', async (req, res) => {
     const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
     // Find Driver with token and valid expiry
-    const Driver = await Driver.findOne({
+    const driver = await Driver.findOne({
       resetPasswordToken,
       resetPasswordExpires: { $gt: Date.now() }
     });
 
-    if (!Driver) {
+    if (!driver) {
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
 
