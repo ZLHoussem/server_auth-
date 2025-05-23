@@ -9,6 +9,8 @@ const authuserRoutes = require('./routes/authUser');
 const userRoutes = require('./routes/user');
 const authdriverRoutes = require('./routes/authDriver');
 const DriverRoutes = require('./routes/driver');
+const trajectRoutes = require('./routes/trajectRoutes');
+const errorHandlert = require('./middlewares/errorHandlertraject');
 const app = express();
 
 // Middleware
@@ -33,6 +35,9 @@ app.use('/api/auth', authuserRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/authdriver', authdriverRoutes);
 app.use('/api/driver', DriverRoutes);
+app.use('/api/trajets', trajectRoutes);
+app.use(errorHandlert);
+
 // Simple route for testing
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the authentication API.' });
