@@ -120,6 +120,12 @@ router.post('/signin', async (req, res) => {
       });
     }
 
+    // Update FCM token if provided in the request
+    if (req.body.fcmToken) {
+      driver.fcmToken = req.body.fcmToken;
+      await driver.save();
+    }
+
     // Create token
     const token = jwt.sign(
       { id: driver._id },
@@ -133,7 +139,8 @@ router.post('/signin', async (req, res) => {
       username: driver.username,
       email: driver.email,
       roles: driver.roles,
-      accessToken: token
+      accessToken: token,
+      fcmToken: driver.fcmToken // Include fcmToken in the response
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

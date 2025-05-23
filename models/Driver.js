@@ -48,6 +48,10 @@ phoneNumber: {
     type: Date,
     default: null
   },
+  fcmToken: {
+    type: String,
+    default: null
+  },
    resetPasswordCode: {
     type: String,
     default: undefined
