@@ -1,4 +1,4 @@
-const Ville = require('../models/ville');
+const Ville = require('../models/Ville');
 
 exports.addVille = async (req, res) => {
   try {
