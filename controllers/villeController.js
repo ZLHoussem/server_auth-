@@ -26,27 +26,46 @@ exports.deleteVille = async (req, res) => {
     res.status(500).json({ message: 'Error deleting ville', error: error.message });
   }
 };
-
+// Updated API endpoint to support letter-based search
 exports.getVilles = async (req, res) => {
   try {
     const { filters, populate } = req.query;
     let query = {};
-
+    
     // Handle filters[name][$contains] for case-insensitive substring search
     if (filters && filters.name && filters.name['$contains']) {
       const keyword = filters.name['$contains'];
-      query.name = { $regex: keyword, $options: 'i' }; // Case-insensitive search
+      
+      // Check if it's a single letter search
+      if (keyword.length === 1) {
+        // Search for cities that start with the letter
+        query.name = { $regex: `^${keyword}`, $options: 'i' };
+      } else {
+        // Regular substring search for longer keywords
+        query.name = { $regex: keyword, $options: 'i' };
+      }
     }
-
+    
+    // Alternative: Handle a dedicated letter parameter
+    if (req.query.letter) {
+      const letter = req.query.letter;
+      if (letter.length === 1) {
+        query.name = { $regex: `^${letter}`, $options: 'i' };
+      }
+    }
+    
     // Handle populate=* (return all fields, which is default in Mongoose)
-    // Since Mongoose returns all fields by default, we only need to query
     const villes = await Ville.find(query);
-
+    
     res.status(200).json({
       message: 'Villes retrieved successfully',
-      data: villes
+      data: villes,
+      count: villes.length
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving villes', error: error.message });
+    res.status(500).json({ 
+      message: 'Error retrieving villes', 
+      error: error.message 
+    });
   }
 };
