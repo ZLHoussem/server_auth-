@@ -48,6 +48,10 @@ phoneNumber: {
     type: Date,
     default: null
   },
+   resetPasswordCode: {
+    type: String,
+    default: undefined
+  },
   roles: {
     type: [String],
     default: ['user']
