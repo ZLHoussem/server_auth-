@@ -5,11 +5,10 @@ const Driver = require('../models/Driver');
 const config = require('../config/config');
 const nodemailer = require('nodemailer');
 const router = express.Router();
-
 // Helper function to send email
 const sendEmail = async (options) => {
   // Setup email transporter
-  const transporter = nodemailer.createTransporter({
+  const transporter = nodemailer.createTransport({
     host: config.email.host,
     port: config.email.port,
     secure: config.email.secure,
@@ -95,7 +94,6 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 //==================================================================================================
 // Login Driver
 router.post('/signin', async (req, res) => {
@@ -141,7 +139,6 @@ router.post('/signin', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 //==================================================================================================
 // Verify email with code
 router.post('/verify-email', async (req, res) => {
@@ -183,7 +180,6 @@ router.post('/verify-email', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 //==================================================================================================
 // Resend verification code
 router.post('/resend-verification', async (req, res) => {
@@ -234,9 +230,7 @@ router.post('/resend-verification', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 //==================================================================================================
-// UPDATED: Send reset code instead of reset link
 router.post('/send-reset-code', async (req, res) => {
   try {
     const { email } = req.body;
@@ -445,6 +439,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
+
 //==================================================================================================
 // Reset password - validate token and set new password
 router.post('/reset-password/:token', async (req, res) => {
@@ -482,7 +477,6 @@ router.post('/reset-password/:token', async (req, res) => {
     res.status(500).json({ message: 'Could not reset password' });
   }
 });
-
 //==================================================================================================
 // Validate reset token without setting a new password
 router.get('/validate-reset-token/:token', async (req, res) => {
