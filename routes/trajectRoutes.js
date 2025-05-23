@@ -13,13 +13,31 @@ router.get('/', async (req, res, next) => {
 });
 // GET trajets in descending order by createdAt
 router.get('/recent', async (req, res, next) => {
-    try {
-      const trajets = await Traject.find().sort({ dateTraject: 1 });
-      res.status(200).json(trajets);
-    } catch (error) {
-      next(error);
+  try {
+    const { idChauffeur } = req.query;
+    
+    // Validate that idChauffeur is provided
+    if (!idChauffeur) {
+      return res.status(400).json({ 
+        error: 'idChauffeur is required' 
+      });
     }
-  });
+
+    // Get today's date at start of day (00:00:00)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Query trajets for the specific chauffeur from today onwards, sorted by date
+    const trajets = await Traject.find({
+      idChauffeur: idChauffeur,
+      dateTraject: { $gte: today } // Only trajets from today onwards
+    }).sort({ dateTraject: 1 }); // Sort by date ascending (earliest first)
+
+    res.status(200).json(trajets);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get('/search', async (req, res, next) => {
   try {
