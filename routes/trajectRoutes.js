@@ -130,16 +130,55 @@ router.put('/:id', async (req, res, next) => {
 // DELETE trajet
 router.delete('/:id', async (req, res, next) => {
   try {
-    const deletedTrajet = await Traject.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
     
-    if (!deletedTrajet) {
-      return res.status(404).json({ message: 'Trajet not found' });
+    // Validate ObjectId format (if using MongoDB)
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ 
+        message: 'Invalid trajet ID format',
+        error: 'ID must be a valid MongoDB ObjectId'
+      });
     }
     
+    console.log(`Attempting to delete trajet with ID: ${id}`);
+    
+    const deletedTrajet = await Traject.findByIdAndDelete(id);
+    
+    if (!deletedTrajet) {
+      console.log(`Trajet with ID ${id} not found`);
+      return res.status(404).json({ 
+        message: 'Trajet not found',
+        id: id
+      });
+    }
+    
+    console.log(`Successfully deleted trajet with ID: ${id}`);
     res.status(204).send();
+    
   } catch (error) {
-    next(error);
+    console.error('Error deleting trajet:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid trajet ID',
+        error: error.message
+      });
+    }
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Validation error',
+        error: error.message
+      });
+    }
+    
+    // Generic server error
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
   }
 });
-
 module.exports = router;
