@@ -14,10 +14,9 @@ const demandeTransportSchema = new mongoose.Schema({
     required: true,
   },
   id_driver: {
-    type: String,
-    // Assuming this could be an ObjectId referencing a Driver collection later
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'Driver', 
+    
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Driver', 
     required: false,
   },
   prixProposer: {
@@ -30,15 +29,14 @@ const demandeTransportSchema = new mongoose.Schema({
     required: true,
   },
   id_traject: {
-    type: String, // Assuming this could be an ObjectId referencing a Traject collection later
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'Traject',
+    
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Traject',
     required: true,
   },
   id_user: {
-    type: String, // Assuming this could be an ObjectId referencing a User collection later
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'User',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: false,
   },
   proposerDriver: {
