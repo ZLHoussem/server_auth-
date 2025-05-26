@@ -11,6 +11,8 @@ const authdriverRoutes = require('./routes/authDriver');
 const DriverRoutes = require('./routes/driver');
 const trajectRoutes = require('./routes/trajectRoutes');
 const villeRoutes = require('./routes/villeRoutes');
+const baggageRoutes = require('./routes/baggageRoutes');
+const demandeTransportRoutes = require('./routes/demandeTransportRoutes');
 const app = express();
 
 // Middleware
@@ -37,6 +39,8 @@ app.use('/api/authdriver', authdriverRoutes);
 app.use('/api/driver', DriverRoutes);
 app.use('/api/trajets', trajectRoutes);
 app.use('/api/villes', villeRoutes);
+app.use('/api/baggage', baggageRoutes);
+app.use('/api/demandes-transport', demandeTransportRoutes);
 
 // Simple route for testing
 app.get('/', (req, res) => {
