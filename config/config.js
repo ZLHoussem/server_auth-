@@ -1,9 +1,11 @@
 module.exports = {
     url: process.env.MONGODB_URI || 'mongodb://admin:admin123@82.112.242.233:27017/bladigo?authSource=admin'
+  
   };
   
   // ===== config/config.js =====
   module.exports = {
+    IMAGE_SERVER_URL: process.env.IMAGE_SERVER_URL || 'http://m4ckwwswggwo8c8g08gwsscc.82.112.242.233.sslip.io/uploads/upload',
     jwtSecret: process.env.JWT_SECRET || 'your-secret-key',
     jwtExpiration: 86400, // 24 hours (in seconds)
     email: {
