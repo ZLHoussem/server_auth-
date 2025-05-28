@@ -32,7 +32,7 @@ const demandeTransportSchema = new mongoose.Schema({
     
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Traject',
-    required: true,
+    required: false,
   },
   id_user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -54,4 +54,4 @@ const demandeTransportSchema = new mongoose.Schema({
   }],
 }, { timestamps: true });
 
-module.exports = mongoose.model('DemandeTransporttest', demandeTransportSchema);
+module.exports = mongoose.model('DemandeTransport', demandeTransportSchema);
