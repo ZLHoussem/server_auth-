@@ -54,4 +54,4 @@ const demandeTransportSchema = new mongoose.Schema({
   }],
 }, { timestamps: true });
 
-module.exports = mongoose.model('DemandeTransport', demandeTransportSchema);
+module.exports = mongoose.model('DemandeTransporttest', demandeTransportSchema);

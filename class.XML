@@ -1,0 +1,156 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="System Architecture" id="system-arch">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Browser/Client Section -->
+        <mxCell id="browser-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="80" width="300" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="browser-title" value="&lt;b&gt;Navigateur&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#663399;" vertex="1" parent="1">
+          <mxGeometry x="690" y="90" width="80" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="flutter-app" value="&lt;b&gt;Interface Flutter&lt;/b&gt;&lt;br&gt;Multiplateforme&lt;br&gt;App Mobile/Web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="720" y="130" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="user-actor" value="" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="900" y="350" width="30" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="user-label" value="Utilisateur" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="885" y="420" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Express Server Section -->
+        <mxCell id="server-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="80" width="350" height="280" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="server-title" value="&lt;b&gt;Serveur Express&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#cc9900;" vertex="1" parent="1">
+          <mxGeometry x="210" y="90" width="120" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="express-api" value="&lt;b&gt;Express.js API&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="130" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="nodejs-backend" value="&lt;b&gt;Backend Node.js&lt;/b&gt;&lt;br&gt;Logique métier&lt;br&gt;Traitement des requêtes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="190" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="business-logic" value="&lt;b&gt;Couche Logique Métier&lt;/b&gt;&lt;br&gt;Traitement des données&lt;br&gt;Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="390" y="190" width="130" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Database Section -->
+        <mxCell id="database" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="450" width="80" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="db-label" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;Base de données" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="330" y="490" width="60" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections -->
+        <!-- HTTPS Request -->
+        <mxCell id="https-request" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#0066CC;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="flutter-app" target="server-container">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="https-label" value="Requête HTTPS (REST)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="570" y="130" width="100" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- JSON Response -->
+        <mxCell id="json-response" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#009900;strokeWidth=2;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="server-container" target="flutter-app">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="json-label" value="Réponse JSON" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#009900;" vertex="1" parent="1">
+          <mxGeometry x="570" y="230" width="100" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Database Connection -->
+        <mxCell id="db-connection" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeColor=#CC0000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="server-container" target="database">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="db-connection-label" value="Requêtes de données&lt;br&gt;(MongoDB)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="390" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- User Interaction -->
+        <mxCell id="user-interaction" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeColor=#9900CC;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="user-actor" target="flutter-app">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="user-interaction-label" value="Interface utilisateur&lt;br&gt;Interaction" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#9900CC;" vertex="1" parent="1">
+          <mxGeometry x="780" y="270" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Internal Server Connections -->
+        <mxCell id="internal-connection1" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#666666;strokeWidth=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="express-api" target="nodejs-backend">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="internal-connection2" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#666666;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="nodejs-backend" target="business-logic">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Title -->
+        <mxCell id="diagram-title" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Architecture d'Application Web Moderne&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Legend -->
+        <mxCell id="legend-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="450" width="180" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-title" value="&lt;b&gt;Légende&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="460" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-line1" value="• Requête HTTPS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="60" y="485" width="100" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-line2" value="• Réponse JSON" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#009900;" vertex="1" parent="1">
+          <mxGeometry x="60" y="505" width="100" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-line3" value="• Requêtes BDD" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#CC0000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="525" width="100" height="15" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-line4" value="• Interaction utilisateur" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#9900CC;" vertex="1" parent="1">
+          <mxGeometry x="60" y="545" width="100" height="15" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
