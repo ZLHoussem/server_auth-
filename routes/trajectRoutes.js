@@ -97,7 +97,7 @@ router.get('/:id', async (req, res, next) => {
     
     // Method 1: Direct findById
     console.log('Method 1: Using findById...');
-    let trajet = await Traject.findById(id);
+    let trajet = await Traject.findById({_id:id});
     console.log('FindById result:', trajet ? 'Found' : 'Not found');
     
     if (!trajet) {
