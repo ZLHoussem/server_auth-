@@ -28,6 +28,42 @@ router.put("/profile", verifyToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// Get Driver by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Validate if ID is provided
+    if (!id) {
+      return res.status(400).json({ 
+        message: "Driver ID is required" 
+      });
+    }
+
+    // Find driver by ID and exclude password
+    const driver = await Driver.findById(id).select("-password");
+    
+    if (!driver) {
+      return res.status(404).json({ 
+        message: "Driver not found" 
+      });
+    }
+
+    res.status(200).json(driver);
+  } catch (error) {
+    // Handle invalid ObjectId format
+    if (error.name === 'CastError') {
+      return res.status(400).json({ 
+        message: "Invalid driver ID format" 
+      });
+    }
+    
+    res.status(500).json({ 
+      message: "Internal server error",
+      error: error.message 
+    });
+  }
+});
 
 // Get all Drivers (admin only)
 router.get("/all", [verifyToken, isAdmin], async (req, res) => {
