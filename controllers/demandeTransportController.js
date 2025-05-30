@@ -10,7 +10,7 @@ exports.createDemandeTransport = async (req, res, next) => {
       poisColieTotal,
       pointRamasage,
       pointLivrison,
-      id_driver,
+      chauffeurId,
       prixProposer,
       statutsDemande,
       id_traject,
@@ -34,7 +34,7 @@ exports.createDemandeTransport = async (req, res, next) => {
       poisColieTotal,
       pointRamasage,
       pointLivrison,
-      id_driver,
+      chauffeurId,
       prixProposer,
       statutsDemande,
       id_traject,
@@ -291,7 +291,7 @@ exports.getDemandesByUser = async (req, res, next) => {
     
     const demandes = await DemandeTransport.find({ id_user: userId })
       .populate('id_bagages')
-      .populate('id_driver', 'nom prenom telephone') // Populate driver info if needed
+      .populate('chauffeurId', 'nom prenom telephone') // Populate driver info if needed
       .sort({ createdAt: -1 }); // Most recent first
 
     res.status(200).json({
@@ -311,7 +311,7 @@ exports.getDemandesByDriver = async (req, res, next) => {
   try {
     const { driverId } = req.params;
     
-    const demandes = await DemandeTransport.find({ id_driver: driverId })
+    const demandes = await DemandeTransport.find({ chauffeurId: driverId })
       .populate('id_bagages')
       .populate('id_user', 'nom prenom telephone') // Populate user info if needed
       .sort({ createdAt: -1 }); // Most recent first
