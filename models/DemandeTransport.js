@@ -13,7 +13,7 @@ const demandeTransportSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  id_driver: {
+  chauffeurId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Driver', 
     required: false,
