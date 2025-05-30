@@ -87,16 +87,50 @@ router.get('/search', async (req, res, next) => {
 // GET trajet by ID
 router.get('/:id', async (req, res, next) => {
   try {
-    const trajet = await Traject.findById(req.params.id);
-    if (!trajet) {
-      return res.status(404).json({ message: 'Trajet not found' });
+    const { id } = req.params;
+    
+    // Validate if the ID is a valid MongoDB ObjectId
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ 
+        message: 'Invalid trajet ID format',
+        error: 'ID must be a valid 24-character MongoDB ObjectId'
+      });
     }
-    res.status(200).json(trajet);
+
+    // Find trajet by ID
+    const trajet = await Traject.findById(id);
+    
+    if (!trajet) {
+      return res.status(404).json({ 
+        message: 'Trajet not found',
+        trajetId: id
+      });
+    }
+
+    // Return the trajet data
+    res.status(200).json({
+      success: true,
+      data: trajet
+    });
+
   } catch (error) {
-    next(error);
+    console.error('Error fetching trajet:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid trajet ID format',
+        error: error.message
+      });
+    }
+    
+    // Handle other errors
+    res.status(500).json({
+      message: 'Internal server error while fetching trajet',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
   }
 });
-
 // CREATE new trajet
 router.post('/', async (req, res, next) => {
   try {
