@@ -24,7 +24,7 @@ const demandeTransportSchema = new mongoose.Schema({
   },
   statutsDemande: {
     type: String,
-    enum: ['pending', 'accepted', 'in_progress', 'completed', 'cancelled', 'rejected'],
+    enum: ['pending', 'accepted', 'in_progress', 'completed', 'rejected'],
     default: 'pending',
     required: true,
   },

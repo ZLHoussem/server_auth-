@@ -144,3 +144,214 @@ exports.deleteDemandeTransport = async (req, res, next) => {
     next(error);
   }
 };
+// @desc    Accept a driver's proposal
+// @route   PUT /api/demandes-transport/:id/accept
+// @access  Private
+exports.acceptProposal = async (req, res, next) => {
+  try {
+    let demandeTransport = await DemandeTransport.findById(req.params.id);
+
+    if (!demandeTransport) {
+      return res.status(404).json({ 
+        success: false, 
+        message: `DemandeTransport not found with id of ${req.params.id}` 
+      });
+    }
+
+    // Check if there's a proposal to accept
+    if (demandeTransport.statutsDemande === 'pending' && !demandeTransport.proposerDriver) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No driver proposal to accept' 
+      });
+    }
+
+    // Update to accepted status
+    demandeTransport = await DemandeTransport.findByIdAndUpdate(
+      req.params.id, 
+      { 
+        statutsDemande: 'accepted',
+        proposerDriver: true,
+        updatedAt: new Date()
+      }, 
+      { new: true, runValidators: true }
+    ).populate('id_bagages');
+
+    res.status(200).json({
+      success: true,
+      message: 'Proposal accepted successfully',
+      data: demandeTransport,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Reject a driver's proposal
+// @route   PUT /api/demandes-transport/:id/reject
+// @access  Private
+exports.rejectProposal = async (req, res, next) => {
+  try {
+    let demandeTransport = await DemandeTransport.findById(req.params.id);
+
+    if (!demandeTransport) {
+      return res.status(404).json({ 
+        success: false, 
+        message: `DemandeTransport not found with id of ${req.params.id}` 
+      });
+    }
+
+    // Update to rejected status
+    demandeTransport = await DemandeTransport.findByIdAndUpdate(
+      req.params.id, 
+      { 
+        statutsDemande: 'rejected',
+        updatedAt: new Date()
+      }, 
+      { new: true, runValidators: true }
+    ).populate('id_bagages');
+
+    res.status(200).json({
+      success: true,
+      message: 'Proposal rejected successfully',
+      data: demandeTransport,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Send a counter proposal or initial price proposal
+// @route   PUT /api/demandes-transport/:id/propose-price
+// @access  Private
+exports.proposePriceUser = async (req, res, next) => {
+  try {
+    const { prixProposer } = req.body;
+
+    // Validate price
+    if (!prixProposer || typeof prixProposer !== 'number' || prixProposer <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Valid price proposal is required' 
+      });
+    }
+
+    let demandeTransport = await DemandeTransport.findById(req.params.id);
+
+    if (!demandeTransport) {
+      return res.status(404).json({ 
+        success: false, 
+        message: `DemandeTransport not found with id of ${req.params.id}` 
+      });
+    }
+
+    // Check if the proposed price is different from current price
+    if (demandeTransport.prixProposer === prixProposer) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Proposed price must be different from current price' 
+      });
+    }
+
+    // Update with new price and status
+    const updateData = {
+      prixProposer: prixProposer,
+      statutsDemande: 'in_progress',
+      proposerUser: true,
+      updatedAt: new Date()
+    };
+
+    // If it's a counter-proposal, also update proposerDriver to false
+    if (demandeTransport.proposerDriver) {
+      updateData.proposerDriver = false;
+    }
+
+    demandeTransport = await DemandeTransport.findByIdAndUpdate(
+      req.params.id, 
+      updateData,
+      { new: true, runValidators: true }
+    ).populate('id_bagages');
+
+    res.status(200).json({
+      success: true,
+      message: 'Price proposal sent successfully',
+      data: demandeTransport,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get demandes by user ID with proposal status
+// @route   GET /api/demandes-transport/user/:userId
+// @access  Private
+exports.getDemandesByUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    
+    const demandes = await DemandeTransport.find({ id_user: userId })
+      .populate('id_bagages')
+      .populate('id_driver', 'nom prenom telephone') // Populate driver info if needed
+      .sort({ createdAt: -1 }); // Most recent first
+
+    res.status(200).json({
+      success: true,
+      count: demandes.length,
+      data: demandes,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get demandes by driver ID
+// @route   GET /api/demandes-transport/driver/:driverId
+// @access  Private
+exports.getDemandesByDriver = async (req, res, next) => {
+  try {
+    const { driverId } = req.params;
+    
+    const demandes = await DemandeTransport.find({ id_driver: driverId })
+      .populate('id_bagages')
+      .populate('id_user', 'nom prenom telephone') // Populate user info if needed
+      .sort({ createdAt: -1 }); // Most recent first
+
+    res.status(200).json({
+      success: true,
+      count: demandes.length,
+      data: demandes,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get demandes by status
+// @route   GET /api/demandes-transport/status/:status
+// @access  Private
+exports.getDemandesByStatus = async (req, res, next) => {
+  try {
+    const { status } = req.params;
+    
+    // Validate status
+    const validStatuses = ['pending', 'in_progress', 'accepted', 'rejected', 'completed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Invalid status. Valid statuses are: ${validStatuses.join(', ')}` 
+      });
+    }
+    
+    const demandes = await DemandeTransport.find({ statutsDemande: status })
+      .populate('id_bagages')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: demandes.length,
+      data: demandes,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

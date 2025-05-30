@@ -5,6 +5,13 @@ const {
   getDemandeTransportById,
   updateDemandeTransport,
   deleteDemandeTransport,
+
+  acceptProposal,
+  rejectProposal,
+  proposePriceUser,
+  getDemandesByUser,
+  getDemandesByDriver,
+  getDemandesByStatus
 } = require('../controllers/demandeTransportController');
 
 const router = express.Router();
@@ -21,5 +28,14 @@ router
   .get(getDemandeTransportById)
   .put(updateDemandeTransport)
   .delete(deleteDemandeTransport);
+  
+router.put('/:id/accept', acceptProposal);
+router.put('/:id/reject', rejectProposal);
+router.put('/:id/propose-price', proposePriceUser);
+
+// Filter routes
+router.get('/user/:userId', getDemandesByUser);
+router.get('/driver/:driverId', getDemandesByDriver);
+router.get('/status/:status', getDemandesByStatus);
 
 module.exports = router;
