@@ -87,76 +87,13 @@ router.get('/search', async (req, res, next) => {
 // GET trajet by ID
 router.get('/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
-    
-    console.log('Searching for traject with ID:', id);
-    console.log('ID type:', typeof id);
-    console.log('ID length:', id.length);
-    
-    // Try multiple search methods to debug
-    
-    // Method 1: Direct findById
-    console.log('Method 1: Using findById...');
-    let trajet = await Traject.findById({_id:id});
-    console.log('FindById result:', trajet ? 'Found' : 'Not found');
-    
+    const trajet = await Traject.findById(req.params.id);
     if (!trajet) {
-      // Method 2: Using findOne with _id
-      console.log('Method 2: Using findOne with _id...');
-      trajet = await Traject.findOne({ _id: id });
-      console.log('FindOne with _id result:', trajet ? 'Found' : 'Not found');
+      return res.status(404).json({ message: 'Trajet not found' });
     }
-    
-    if (!trajet) {
-      // Method 3: Using string comparison
-      console.log('Method 3: Using findOne with string _id...');
-      trajet = await Traject.findOne({ _id: id.toString() });
-      console.log('FindOne with string _id result:', trajet ? 'Found' : 'Not found');
-    }
-    
-    if (!trajet) {
-      // Method 4: Search all trajets to see what IDs exist
-      console.log('Method 4: Checking all traject IDs...');
-      const allTrajets = await Traject.find({}, { _id: 1 }).limit(10);
-      console.log('Available traject IDs:');
-      allTrajets.forEach(t => {
-        console.log('  - ID:', t._id.toString(), 'Match:', t._id.toString() === id);
-      });
-      
-      return res.status(404).json({ 
-        message: 'Trajet not found after trying multiple methods',
-        searchedId: id,
-        availableIds: allTrajets.map(t => t._id.toString()),
-        debug: {
-          searchedIdType: typeof id,
-          searchedIdLength: id.length,
-          isValidObjectId: id.match(/^[0-9a-fA-F]{24}$/) !== null
-        }
-      });
-    }
-
-    console.log('Traject found successfully');
-    
-    // Return the traject data
-    res.status(200).json({
-      success: true,
-      data: trajet,
-      debug: {
-        foundWith: trajet ? 'One of the methods worked' : 'None worked',
-        searchedId: id
-      }
-    });
-
+    res.status(200).json(trajet);
   } catch (error) {
-    console.error('Error fetching traject:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    
-    res.status(500).json({
-      message: 'Internal server error while fetching trajet',
-      error: error.message,
-      searchedId: req.params.id
-    });
+    next(error);
   }
 });
 
