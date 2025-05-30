@@ -52,6 +52,16 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     default: ['user']
   },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    sparse: true, // Allows multiple documents to have no value for this field
+    index: true // Add index for faster queries
+  },
+    fcmToken: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
