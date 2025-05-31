@@ -41,7 +41,7 @@ router.get("/:id", async (req, res) => {
     }
 
     // Find userId by ID and exclude password
-    const userId = await userId.findById(id);
+    const userId = await User.findById(id);
     
     if (!userId) {
       return res.status(404).json({ 
