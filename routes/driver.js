@@ -41,7 +41,7 @@ router.get("/:id", async (req, res) => {
     }
 
     // Find driver by ID and exclude password
-    const driver = await Driver.findById(_id);
+    const driver = await Driver.findById(id);
     
     if (!driver) {
       return res.status(404).json({ 
