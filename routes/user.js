@@ -29,6 +29,41 @@ router.put("/profile", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Validate if ID is provided
+    if (!id) {
+      return res.status(400).json({ 
+        message: "userId ID is required" 
+      });
+    }
+
+    // Find userId by ID and exclude password
+    const userId = await userId.findById(id);
+    
+    if (!userId) {
+      return res.status(404).json({ 
+        message: "userId not found" 
+      });
+    }
+
+    res.status(200).json(userId);
+  } catch (error) {
+    // Handle invalid ObjectId format
+    if (error.name === 'CastError') {
+      return res.status(400).json({ 
+        message: "Invalid userId ID format" 
+      });
+    }
+    
+    res.status(500).json({ 
+      message: "Internal server error",
+      error: error.message 
+    });
+  }
+});
 // Get all users (admin only)
 router.get("/all", [verifyToken, isAdmin], async (req, res) => {
   try {
