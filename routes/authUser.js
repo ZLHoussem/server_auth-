@@ -119,7 +119,11 @@ router.post('/signin', async (req, res) => {
         userId: user._id
       });
     }
-
+ // Update FCM token if provided in the request
+    if (req.body.fcmToken) {
+      user.fcmToken = req.body.fcmToken;
+      await user.save();
+    }
     // Create token
     const token = jwt.sign(
       { id: user._id },
