@@ -356,5 +356,65 @@ router.get('/validate-reset-token/:token', async (req, res) => {
     res.status(500).json({ message: 'Could not validate token' });
   }
 });
+//===================================================================================
+router.post('/send-reset-code', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // Find Driver by email
+    const driver = await Driver.findOne({ email });
+    
+    if (!driver) {
+      return res.status(404).json({ message: 'User with this email does not exist' });
+    }
+
+    // Generate 6-digit verification code
+    const resetCode = generateVerificationCode(6);
+    
+    // Set code and expiry on Driver document (expires in 15 minutes)
+    driver.resetPasswordCode = resetCode;
+    driver.resetPasswordExpires = Date.now() + (15 * 60 * 1000); // 15 minutes
+    
+    await driver.save();
+
+    // Send email with verification code
+    await sendEmail({
+      to: driver.email,
+      subject: 'Password Reset Verification Code',
+      text: `Your password reset verification code is: ${resetCode}\n\nThis code will expire in 15 minutes.\n\nIf you didn't request this, please ignore this email.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333; text-align: center;">Password Reset Verification</h2>
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+            <h1 style="color: #007bff; font-size: 32px; margin: 0; letter-spacing: 3px;">${resetCode}</h1>
+          </div>
+          <p style="color: #666; text-align: center;">
+            Enter this 6-digit code in the app to reset your password.
+          </p>
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            This code will expire in 15 minutes. If you didn't request this, please ignore this email.
+          </p>
+        </div>
+      `
+    });
+
+    res.status(200).json({ message: 'Verification code sent successfully' });
+  } catch (error) {
+    console.error('Send reset code error:', error);
+    
+    // Clean up on error
+    if (error.driver) {
+      error.driver.resetPasswordCode = undefined;
+      error.driver.resetPasswordExpires = undefined;
+      await error.driver.save();
+    }
+    
+    res.status(500).json({ message: 'Could not send verification code' });
+  }
+});
 
 module.exports = router;

@@ -60,7 +60,7 @@ exports.getAllDemandeTransports = async (req, res, next) => {
   try {
     const demandesTransport = await DemandeTransport.find()
       .populate('id_bagages')
-      .sort({ updatedAt: 1 }); // -1 for descending order (most recent first)
+      .sort({ updatedAt: -1 }); // -1 for descending order (most recent first)
     
     res.status(200).json({
       success: true,
