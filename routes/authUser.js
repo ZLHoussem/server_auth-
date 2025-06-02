@@ -407,7 +407,7 @@ router.post('/send-reset-code', async (req, res) => {
     console.error('Send reset code error:', error);
     
     // Clean up on error
-    if (error.User) {
+    if (error.user) {
       error.driver.resetPasswordCode = undefined;
       error.driver.resetPasswordExpires = undefined;
       await error.driver.save();
