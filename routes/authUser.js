@@ -416,5 +416,71 @@ router.post('/send-reset-code', async (req, res) => {
     res.status(500).json({ message: 'Could not send verification code' });
   }
 });
+router.post('/reset-password-with-code', async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ 
+        message: 'Email, verification code, and new password are required' 
+      });
+    }
+
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return res.status(400).json({ 
+        message: 'Password must be at least 8 characters long' 
+      });
+    }
+
+    // Find driver with matching email and code
+    const driver = await Driver.findOne({ 
+      email,
+      resetPasswordCode: code,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!driver) {
+      return res.status(400).json({ 
+        message: 'Invalid or expired verification code' 
+      });
+    }
+
+    // Set new password and clear reset fields
+    driver.password = newPassword; // This will be hashed by the pre-save hook in your model
+    driver.resetPasswordCode = undefined;
+    driver.resetPasswordExpires = undefined;
+    
+    await driver.save();
+
+    // Send confirmation email
+    await sendEmail({
+      to: driver.email,
+      subject: 'Password Reset Successful',
+      text: 'Your password has been successfully reset. If you did not make this change, please contact support immediately.',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #28a745; text-align: center;">Password Reset Successful</h2>
+          <p style="color: #333; text-align: center;">
+            Your password has been successfully reset.
+          </p>
+          <p style="color: #666; text-align: center;">
+            You can now log in with your new password.
+          </p>
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            If you did not make this change, please contact support immediately.
+          </p>
+        </div>
+      `
+    });
+
+    res.status(200).json({ 
+      message: 'Password reset successfully' 
+    });
+  } catch (error) {
+    console.error('Reset password with code error:', error);
+    res.status(500).json({ message: 'Could not reset password' });
+  }
+});
 
 module.exports = router;
