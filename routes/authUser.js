@@ -366,9 +366,9 @@ router.post('/send-reset-code', async (req, res) => {
     }
 
     // Find Driver by email
-    const driver = await Driver.findOne({ email });
+    const user = await User.findOne({ email });
     
-    if (!driver) {
+    if (!user) {
       return res.status(404).json({ message: 'User with this email does not exist' });
     }
 
@@ -376,14 +376,14 @@ router.post('/send-reset-code', async (req, res) => {
     const resetCode = generateVerificationCode(6);
     
     // Set code and expiry on Driver document (expires in 15 minutes)
-    driver.resetPasswordCode = resetCode;
-    driver.resetPasswordExpires = Date.now() + (15 * 60 * 1000); // 15 minutes
+    User.resetPasswordCode = resetCode;
+    User.resetPasswordExpires = Date.now() + (15 * 60 * 1000); // 15 minutes
     
-    await driver.save();
+    await User.save();
 
     // Send email with verification code
     await sendEmail({
-      to: driver.email,
+      to: User.email,
       subject: 'Password Reset Verification Code',
       text: `Your password reset verification code is: ${resetCode}\n\nThis code will expire in 15 minutes.\n\nIf you didn't request this, please ignore this email.`,
       html: `
@@ -407,7 +407,7 @@ router.post('/send-reset-code', async (req, res) => {
     console.error('Send reset code error:', error);
     
     // Clean up on error
-    if (error.driver) {
+    if (error.User) {
       error.driver.resetPasswordCode = undefined;
       error.driver.resetPasswordExpires = undefined;
       await error.driver.save();
