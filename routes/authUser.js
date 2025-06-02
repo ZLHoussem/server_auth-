@@ -408,9 +408,9 @@ router.post('/send-reset-code', async (req, res) => {
     
     // Clean up on error
     if (error.user) {
-      error.driver.resetPasswordCode = undefined;
-      error.driver.resetPasswordExpires = undefined;
-      await error.driver.save();
+      error.user.resetPasswordCode = undefined;
+      error.user.resetPasswordExpires = undefined;
+      await error.user.save();
     }
     
     res.status(500).json({ message: 'Could not send verification code' });
