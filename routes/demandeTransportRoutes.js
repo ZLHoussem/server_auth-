@@ -11,7 +11,8 @@ const {
   proposePriceUser,
   getDemandesByUser,
   getDemandesByDriver,
-  getDemandesByStatus
+  getDemandesByStatus,
+  updateStatutLivraison,
 } = require('../controllers/demandeTransportController');
 
 const router = express.Router();
@@ -37,5 +38,8 @@ router.put('/:id/propose-price', proposePriceUser);
 router.get('/user/:userId', getDemandesByUser);
 router.get('/driver/:driverId', getDemandesByDriver);
 router.get('/status/:status', getDemandesByStatus);
+
+///
+router.put('/:id/status',updateStatutLivraison)
 
 module.exports = router;
