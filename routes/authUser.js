@@ -484,7 +484,7 @@ router.post('/reset-password-with-code', async (req, res) => {
   }
 });
 //====================================================
-router.put('/update-profile', authenticateToken, async (req, res) => {
+router.put('/update-profile',  async (req, res) => {
   try {
     const { username, email, phoneNumber } = req.body;
     const userId = req.user.id; // From JWT token middleware
