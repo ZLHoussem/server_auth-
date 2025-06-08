@@ -425,11 +425,7 @@ exports.updateStatutLivraison = async (req, res) => {
 
     // Validation du statut
     const statutsValides = [
-      "Payé",
-      "Collecté",
-      "En dépôt",
-      "En livraison",
-      "Livré",
+     'Payé', 'collecté', 'En dépot', 'En livrison', 'Livré'
     ];
     if (!statutsValides.includes(statuts)) {
       return res.status(400).json({
@@ -449,11 +445,7 @@ exports.updateStatutLivraison = async (req, res) => {
 
     // Logique de progression des statuts (optionnel)
     const ordreStatuts = [
-      "Payé",
-      "Collecté",
-      "En dépôt",
-      "En livraison",
-      "Livré",
+    'Payé', 'collecté', 'En dépot', 'En livrison', 'Livré'
     ];
     const indexActuel = ordreStatuts.indexOf(demande.statuts);
     const indexNouveau = ordreStatuts.indexOf(statuts);
@@ -476,8 +468,6 @@ exports.updateStatutLivraison = async (req, res) => {
           historiqueStatuts: {
             statut: statuts,
             date: new Date(),
-            commentaire: req.body.commentaire || `Statut changé vers: ${statuts}`,
-            modifiePar: req.body.modifiePar || null,
           },
         },
       },
