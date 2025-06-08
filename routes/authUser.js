@@ -483,5 +483,130 @@ router.post('/reset-password-with-code', async (req, res) => {
     res.status(500).json({ message: 'Could not reset password' });
   }
 });
+//====================================================
+router.put('/update-profile', authenticateToken, async (req, res) => {
+  try {
+    const { username, email, phoneNumber } = req.body;
+    const userId = req.user.id; // From JWT token middleware
+
+    // Validate that at least one field is provided
+    if (!username && !email && !phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: 'No data provided for update.'
+      });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.'
+      });
+    }
+
+    // Prepare update object
+    const updateData = {};
+    
+    // Validate and add username if provided
+    if (username && username.trim()) {
+      // Check if username already exists (excluding current user)
+      const existingUser = await User.findOne({ 
+        username: username.trim(), 
+        _id: { $ne: userId } 
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Username already exists.'
+        });
+      }
+      
+      updateData.username = username.trim();
+    }
+
+    // Validate and add email if provided
+    if (email && email.trim()) {
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid email format.'
+        });
+      }
+
+      // Check if email already exists (excluding current user)
+      const existingUser = await User.findOne({ 
+        email: email.trim().toLowerCase(), 
+        _id: { $ne: userId } 
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email already exists.'
+        });
+      }
+      
+      updateData.email = email.trim().toLowerCase();
+      // Reset email verification if email is changed
+      updateData.isVerified = false;
+    }
+
+    // Validate and add phone number if provided
+    if (phoneNumber && phoneNumber.trim()) {
+      // Basic phone number validation (adjust regex as needed)
+      const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+      if (!phoneRegex.test(phoneNumber.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid phone number format.'
+        });
+      }
+      
+      updateData.phoneNumber = phoneNumber.trim();
+    }
+
+    // Update the user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select('-password'); // Exclude password from response
+
+    if (!updatedUser) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update profile.'
+      });
+    }
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully.',
+      user: {
+        id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        phoneNumber: updatedUser.phoneNumber,
+        isVerified: updatedUser.isVerified,
+        roles: updatedUser.roles,
+        fcmToken: updatedUser.fcmToken
+      }
+    });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.'
+    });
+  }
+});
+
 
 module.exports = router;
