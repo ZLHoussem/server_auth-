@@ -484,10 +484,19 @@ router.post('/reset-password-with-code', async (req, res) => {
   }
 });
 //====================================================
-router.put('/update-profile',  async (req, res) => {
+router.put('/:id/update-profile',  async (req, res) => {
   try {
     const { username, email, phoneNumber } = req.body;
-    const userId = req.user.id; // From JWT token middleware
+    const userId = req.params.id; // From URL parameter
+
+    // Ensure the authenticated user is updating their own profile
+    // This assumes an authentication middleware populates req.user
+    if (req.user && req.user.id !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Unauthorized: You can only update your own profile.'
+      });
+    }
 
     // Validate that at least one field is provided
     if (!username && !email && !phoneNumber) {
