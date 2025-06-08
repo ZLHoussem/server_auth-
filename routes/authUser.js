@@ -136,6 +136,7 @@ router.post('/signin', async (req, res) => {
       id: user._id,
       username: user.username,
       email: user.email,
+      phoneNumber:user.phoneNumber,
       roles: user.roles,
       accessToken: token
     });
