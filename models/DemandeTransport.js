@@ -31,7 +31,7 @@ const demandeTransportSchema = new mongoose.Schema({
     type: String,
     enum: ['Payé', 'collecté', 'En dépot', 'En livrison', 'Livré'],
     default: 'Accepté',
-    required: true,
+    required: false,
   },
   
   id_traject: {
